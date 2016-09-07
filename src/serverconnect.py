@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import pymysql
-import sys
+
 #192.168.56.101
-conn = pymysql.connect(host='192.168.56.101', port=3306, user='biron', passwd='', db='testdb')
+conn = pymysql.connect(host='192.168.7.88', 
+                       port= 3306, 
+                       user='root', 
+                       #password='4xb@wickow@86', 
+                       db='example')
 cur = conn.cursor()
     
-ver = cur.fetchone()
+print(cur.execute("SHOW DATABASES"))
+
+cur.close()
+conn.close()
     
     #print('Datebase Version: ' + ver)

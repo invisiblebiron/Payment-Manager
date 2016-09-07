@@ -9,13 +9,12 @@ import openpyxl
 import os
 import datetime
 
-#Change this to the desired folder path where all purhcase orders are stored. Using invoices temporarily for testing.
+#Change this to the desired folder path where all purchase orders are stored. Using invoices temporarily for testing.
 purchaseOrderDirectory = 'D:\\AGM\\Documents\\Payments\\POs\\Unsent'
 
 class PurchaseOrder:
-    
     language = 'N/A'
-    
+       
     def __init__(self, firstName, lastName, email, date, departmentName, PONumber, itemName, orderAmount, projectManager):
         
         self.firstName = firstName 
@@ -27,7 +26,10 @@ class PurchaseOrder:
         self.itemName = itemName
         self.orderAmount = orderAmount
         self.projectManager = projectManager
-
+        
+def addNewPurchaseOrderObject(newPurchaseOrderObject):
+    purchaseOrderList.append(newPurchaseOrderObject)
+            
 def createPurchaseOrders():
     print("Creating new purchase order...\n")
     #Request necessary info
@@ -59,9 +61,34 @@ def createPurchaseOrders():
     purchaseOrderTemplateSheet['H11'] = projectManager_New
     purchaseOrderTemplateSheet['F14'] = PurchaseOrder.language
     
-    newFileSaveName = 'PO_' + PONumber_new + '_' + lastName_new + '_' + firstName_new + '.xlsx'
+    print('Information to output to Purchase Order:\n\n')
+    print('First Name: ' +  firstName_new)
+    print('Last Name: ' + lastName_new)
+    print('E-mail: ' + email_new)
+    print('Date: ' + date_new)
+    print('Department Name: ' + departmentName_new)
+    print('PO Number: ' + PONumber_new)
+    print('Project Name: ' + itemName_new)
+    print('Order Name: ' + orderAmount_New)
+    print('Project Manager: ' + projectManager_New)
+    print('\n\n')
     
-    purchaseOrderTemplate.save(purchaseOrderDirectory + '\\' + newFileSaveName)
+    verifyInfo = input('Would you like to save with this information?(y/n)')
+    
+    if verifyInfo == 'y':
+        
+        newPurchaseOrderObject = PurchaseOrder(firstName_new, lastName_new, email_new, date_new, departmentName_new, PONumber_new, itemName_new, orderAmount_New, projectManager_New)
+        addNewPurchaseOrderObject(newPurchaseOrderObject)
+        
+        newFileSaveName = 'PO_' + PONumber_new + '_' + lastName_new + '_' + firstName_new + '.xlsx'
+        print('Saving to ' + newFileSaveName + '...')
+        purchaseOrderTemplate.save(purchaseOrderDirectory + '\\' + newFileSaveName)
+        
+    else:
+        print('Restarting creation of Purchase Order...')
+        createPurchaseOrders()     
+    
+    
     
 def listPurchaseOrders():
     i = 1
@@ -75,34 +102,40 @@ def getPurchaseOrderTotal():
     for purchaseOrder in purchaseOrderList:
         total += purchaseOrder.orderAmount
         
-    print('Purchase Order Total: ' + str(total))
-        
-   
+    print('Purchase Order Total: ' + str(total))   
 
+def deletePurchaseOrderList():
+    for item in purchaseOrderList:
+        purchaseOrderList.remove(item)
+    
 #Create list for purchaseOrder Objects
 purchaseOrderList = []
 
-for root, subfolder, filenames in (os.walk(purchaseOrderDirectory)):
-    for file in filenames:  
-       #Create new workbook object
-       if file.endswith('.xlsx'):
-            purchaseOrderWB = openpyxl.load_workbook(purchaseOrderDirectory + '\\' + file)
-            purchaseOrderWorksheet = purchaseOrderWB.get_sheet_by_name('Sheet1')
-        
-             #Edit these before using Purchase Orders. Currently set to invoice values.
-            firstName = purchaseOrderWorksheet['B3'].value
-            lastName = purchaseOrderWorksheet['B4'].value
-            email = purchaseOrderWorksheet['B5'].value
-            date = purchaseOrderWorksheet['I2'].value
-            departmentName = purchaseOrderWorksheet['H10'].value
-            PONumber = purchaseOrderWorksheet['A14'].value
-            itemName = purchaseOrderWorksheet['B14'].value
-            orderAmount = purchaseOrderWorksheet['J14'].value
-            projectManager = purchaseOrderWorksheet['H11'].value
+def initializePurchaseOrderList():
+    
+    
+    deletePurchaseOrderList()
+    
+    for root, subfolder, filenames in (os.walk(purchaseOrderDirectory)):
+        for file in filenames:  
+        #Create new workbook object
+            if file.endswith('.xlsx'):
+                purchaseOrderWB = openpyxl.load_workbook(purchaseOrderDirectory + '\\' + file)
+                purchaseOrderWorksheet = purchaseOrderWB.get_sheet_by_name('Sheet1')
             
-            #Instantiate Purchase Order Object
-            purchaseOrderObject = PurchaseOrder(firstName, lastName, email, date, departmentName, PONumber, itemName, orderAmount, projectManager)
-        
-            #Append to list for later.
-            purchaseOrderList.append(purchaseOrderObject)
-        
+                firstName = purchaseOrderWorksheet['B3'].value
+                lastName = purchaseOrderWorksheet['B4'].value
+                email = purchaseOrderWorksheet['B5'].value
+                date = purchaseOrderWorksheet['I2'].value
+                departmentName = purchaseOrderWorksheet['H10'].value
+                PONumber = purchaseOrderWorksheet['A14'].value
+                itemName = purchaseOrderWorksheet['B14'].value
+                orderAmount = purchaseOrderWorksheet['J14'].value
+                projectManager = purchaseOrderWorksheet['H11'].value
+                
+                #Instantiate Purchase Order Object
+                purchaseOrderObject = PurchaseOrder(firstName, lastName, email, date, departmentName, PONumber, itemName, orderAmount, projectManager)
+            
+                #Append to list for later.
+                
+                addNewPurchaseOrderObject(purchaseOrderObject)
