@@ -24,3 +24,6 @@ def getInvoiceFileAmount():
     
     print('\t\t\t\t' + str(len(invoiceList)) + ' Invoices Available')
     
+#def createInvoice():
+    
+    

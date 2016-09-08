@@ -8,6 +8,8 @@ This module processes all Purchase Orders in a designated folder.
 import openpyxl
 import os
 import datetime
+import invoices
+from test.test_multiprocessing_main_handling import AVAILABLE_START_METHODS
 
 #Change this to the desired folder path where all purchase orders are stored. Using invoices temporarily for testing.
 purchaseOrderDirectory = 'D:\\AGM\\Documents\\Payments\\POs\\Unsent'
@@ -29,20 +31,94 @@ class PurchaseOrder:
         
 def addNewPurchaseOrderObject(newPurchaseOrderObject):
     purchaseOrderList.append(newPurchaseOrderObject)
-            
+          
 def createPurchaseOrders():
+    
+    availableDepartments = ['Development','Localization','IT','Creative']
     print("Creating new purchase order...\n")
     #Request necessary info
-    firstName_new = input('First Name: ')
-    lastName_new = input('Last Name: ')
-    email_new = input('E-mail: ')
-    date_new = str(datetime.date.today())
-    departmentName_new = input('Department: ')
-    PONumber_new = input('PO Number: ')
-    itemName_new = input('Project Name: ')
-    orderAmount_New = input('Order Amount: ')
-    projectManager_New = input('Project Manager: ')
     
+    #Get first name and loop if left blank.
+    firstName_new = input('First Name: ')
+    while firstName_new == '':
+        print('You cannot leave the field blank.')
+        firstName_new = input('First Name: ')
+     
+    #Get first name and loop if left blank.   
+    lastName_new = input('Last Name: ')
+    while lastName_new == '':
+        print('You cannot leave the field blank.')
+        lastName_new = input('Last Name: ')
+    
+    #Get e-mail     and loop if left blank. Check if e-mail is valid.    
+    email_new = input('E-mail: ')
+    while email_new == '':
+        print('You cannot leave the field blank.')
+        email_new = input('E-mail: ')
+        
+    #Get current date.    
+    date_new = str(datetime.date.today())
+    
+    #List selection of Departments
+    print('Department:\n')
+    count = 1
+    validDepartmentSelection = False
+    
+    while validDepartmentSelection == False:
+        
+        for department in availableDepartments:
+            print(str(count) + '. ' + department)
+            count += 1
+        
+        departmentChoice = input('Enter number for department: ')
+        
+        
+        if departmentChoice == '1':
+            departmentName_new = availableDepartments[0]
+            validDepartmentSelection = True
+            
+        elif departmentChoice == '2':
+            departmentName_new = availableDepartments[1]
+            validDepartmentSelection = True
+            
+        elif departmentChoice == '3':
+            departmentName_new = availableDepartments[2]  
+            validDepartmentSelection = True
+            
+        elif departmentChoice == '4':
+            departmentName_new = availableDepartments[3]
+            validDepartmentSelection = True
+            
+        else:
+            print('Not a valid department selection!\n')
+            count = 1     
+            
+    
+    #Get PO number and check if it is valid. Loop if left blank or invalid.
+    PONumber_new = input('PO Number: ')
+    while not PONumber_new.isdigit() or PONumber_new == '':
+        print('The PO Number cannot be blank and needs to be a number.\n')
+        PONumber_new = input('PO Number: ')
+       
+        
+    #Get project name and loop if left blank.   
+    itemName_new = input('Project Name: ')
+    while itemName_new == '':
+        print('You cannot leave the field blank.\n')
+        itemName_new = input('Project Name: ')
+    
+    #Get order amount and loop if left blank.   
+    orderAmount_New = input('Order Amount: ')
+    while not orderAmount_New.isdigit() or orderAmount_New == '':
+        print('The Order Amount cannot be blank and needs to be a valid value.\n')
+        orderAmount_New = input('Order Amount: ')
+    
+    #   
+    projectManager_New = input('Project Manager: ')
+    while projectManager_New == '':
+        print('You cannot leave the field blank.\n')
+        projectManager_New = input('Project Manager: ')
+        
     #Open template
     templateFolder = 'D:\\AGM\\Documents\\Payments\\Templates'
     templateFile = templateFolder  + '\\' + 'PO Template.xlsx'
@@ -69,7 +145,7 @@ def createPurchaseOrders():
     print('Department Name: ' + departmentName_new)
     print('PO Number: ' + PONumber_new)
     print('Project Name: ' + itemName_new)
-    print('Order Name: ' + orderAmount_New)
+    print('Order Amount: ' + orderAmount_New)
     print('Project Manager: ' + projectManager_New)
     print('\n\n')
     

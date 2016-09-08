@@ -23,7 +23,7 @@ def main():
         
         #Enter a number which will run a particular function.
         option = input('\nChoice: ')
-        print("You've enterted option " + option + ".\n")
+        print("You've entered option " + option + ".\n")
         
         #Displays a list of all Purchase Orders (Names, Amounts, Project Name)
         if option == '1':
@@ -38,7 +38,7 @@ def main():
             purchaseOrders.createPurchaseOrders()
         else:
             print('Not an available option!')
-            print('Returing to selection...')
+            print('Returning to selection...')
             displayOption()
     
     print('Project Manager Module')
